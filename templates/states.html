@@ -10,13 +10,17 @@
 </head>
 <body>
 
-    <h2>TEST</h2>
-
-   
-    {% block javascript %}
-       
+    <h2>Number of homeless by year in {{full_state_name}} from 2007 to 2019</h2>
+    {% block script%}
+    <script>
+        var APILink = "../data/{{state}}";
+    </script>
     {% endblock %}
-
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <script src="../static/js/states.js"></script>
+    
+   
+    
 
 
 </body>
