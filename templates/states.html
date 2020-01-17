@@ -11,11 +11,21 @@
 <body>
 
     <h2>Number of homeless by year in {{full_state_name}} from 2007 to 2019</h2>
+
+    <div id="chart">
+    </div>
+
+
+
+
     {% block script%}
     <script>
-        var APILink = "../data/{{state}}";
+        var stateName = "{{state}}";
+        var fullStateName = "{{full_state_name}}";
     </script>
     {% endblock %}
+
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     <script src="https://d3js.org/d3.v5.min.js"></script>
     <script src="../static/js/states.js"></script>
     
