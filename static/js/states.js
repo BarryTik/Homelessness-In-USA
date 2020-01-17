@@ -1,122 +1,116 @@
-var svgWidth = 960;
-var svgHeight = 500;
+function bounds(array1, array2) {
+    var newArray = []
 
-var margin = {
-    top: 60,
-    right: 60,
-    bottom: 60,
-    left: 60
-};
-
-var chartWidth = svgWidth - margin.left - margin.right;
-var chartHeight = svgHeight - margin.top - margin.bottom;
-
-var svg = d3.select("body")
-.append("svg")
-.attr("width", svgWidth)
-.attr("height", svgHeight);
-
-var chartGroup = svg.append("g")
-.attr("transform", `translate(${margin.left}, ${margin.top})`);
-
-var parseTime = d3.timeParse("%Y");
-
-var homelessData = {};
-
-d3.json(APILink).then(data => {
-    console.log("start");
-    homelessData = data;
-    console.log(homelessData);
-
-    for(var i=0; i < homelessData.year.length; i++){
-
-        homelessData.year[i] = parseTime(homelessData.year[i].toString());
-        // console.log(homelessData.year[i]);
+    for(i=0; i< array1.length; i++){
+        newArray.push(array1[i]);
     };
-
-    console.log(homelessData);
-    console.log()
-
-
-    var extent = d3.extent(homelessData.year); 
-    console.log(extent);
-    var xTimeScale = d3.scaleTime()
-        .domain(d3.extent(homelessData.year))
-        .range([0, chartWidth]);
-
-
-    var max = d3.max(homelessData.homelessness);
-    console.log(max);
-
-    var yLinearScale = d3.scaleLinear()
-        .domain([0, d3.max(homelessData.homelessness)])
-        .range([chartHeight, 0]);
-        
-
-    var bottomAxis = d3.axisBottom(xTimeScale);
-    var leftAxis = d3.axisLeft(yLinearScale);
-    
-    console.log(bottomAxis);
-    console.log(leftAxis);
-
-    var drawLine = d3.line()
-        .x(data => xTimeScale(data.x))      //changed .year to .x
-        .y(data => yLinearScale(data.y));   //changed .homelessness to .y
-
-    // var drawLine = d3.line()
-    //     .x(data => xTimeScale(data.year))      
-    //     .y(data => yLinearScale(data.homelessness));  
-    
-
-    // var x1 = parseTime("2008");
-    // var x2 = parseTime("2015");
-
-    // console.log(x1);
-    // console.log(x2);
-    // var testLine = [
-    //     {x:x1, y:15},
-    //     {x:x2, y:10}
-    // ];
-
-    // var testLine2 = [
-    //     {x:[x1, x2]},
-    //     {y:[10,15]}
-    // ];
-    // console.log(testLine2)
-
-    // console.log("drawing test line");
-    // console.log(drawLine(testLine));
-
-    var reorderedHomelessData = [];
-
-    for( i=0; i<homelessData.homelessness.length; i++){
-        console.log(homelessData.homelessness[i]);
-        console.log(homelessData.year[i]);
-        reorderedHomelessData[i] = {x:homelessData.year[i] , y:homelessData.homelessness[i]};
+    for(i=0; i< array1.length; i++){
+        newArray.push(array2[i]);
     };
-
-    console.log(reorderedHomelessData);
-
-
+    return d3.extent(newArray);
+}
 
 
+console.log(stateName);
+console.log(fullStateName);
+
+d3.json("../data/PIT").then(data => {
+    console.log("start PIT");
+    var homelessData = data[stateName];
+    console.log(homelessData);
+    d3.json("../data/HIC").then(data2 => {
+        console.log("start HIC");
+        var bedsData = data2[stateName];
+        console.log(bedsData);
+
+
+        var years = Object.keys(homelessData);
+        var homelessness = Object.values(homelessData);
+        var extentHomelessness = d3.extent(homelessness);
+        var beds = Object.values(bedsData);
+        var extentBeds = d3.extent(beds);
+        console.log(extentHomelessness);
+
+        var options = {
+            series: [
+            {
+            name: `Number of Homeless in ${fullStateName}`,
+            data: homelessness
+            },
+            {
+              name: `Available Housing for Homeless in ${fullStateName}`,
+              data: beds
+            }
+        ],
+            chart: {
+            height: 350,
+            type: 'line',
+            dropShadow: {
+            enabled: true,
+            color: '#000',
+            top: 18,
+            left: 7,
+            blur: 10,
+            opacity: 0.2
+            },
+            toolbar: {
+            show: false
+            }
+        },
+        colors: ['#77B6EA', '#545454'],
+        dataLabels: {
+            enabled: true,
+        },
+        stroke: {
+            curve: 'smooth'
+        },
+        title: {
+            text: `Number of Homeless in ${fullStateName}`,
+            align: 'left'
+        },
+        grid: {
+            borderColor: '#e7e7e7',
+            row: {
+            colors: ['#f3f3f3', 'transparent'], // takes an array which will be repeated on columns
+            opacity: 0.5
+            },
+        },
+        markers: {
+            size: 1
+        },
+        xaxis: {
+            categories: years,
+            title: {
+            text: 'Year'
+            }
+        },
+        yaxis: {
+            title: {
+            text: 'Number'
+            },
+            min: bounds(extentHomelessness,extentBeds)[0]*0.95,
+            max: bounds(extentHomelessness,extentBeds)[1]*1.03 
+        },
+        legend: {
+            position: 'top',
+            horizontalAlign: 'right',
+            floating: true,
+            offsetY: -25,
+            offsetX: -5
+        }
+        };
+
+        var chart = new ApexCharts(document.querySelector("#chart"), options);
+        chart.render();
+
+
+
+    }).catch(function(error){
+        console.log(error);
+    });
 
     
-    chartGroup.append("path")
-        .classed("line", true)
-        .attr("stroke", "black")
-        .attr("stroke-width", 5)
-        .attr("fill","none")
-        .attr("d", drawLine(reorderedHomelessData));
 
-    chartGroup.append("g")
-        .classed("axis", true)
-        .call(leftAxis);
-
-    chartGroup.append("g")
-        .classed("axis", true)
-        .attr("transform", `translate(0, ${chartHeight})`)
-        .call(bottomAxis);
 }).catch(function(error){
     console.log(error);
 });
