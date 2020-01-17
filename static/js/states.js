@@ -43,7 +43,7 @@ d3.json("../data/PIT").then(data => {
             }
         ],
             chart: {
-            height: 350,
+            height: 750,
             type: 'line',
             dropShadow: {
             enabled: true,
