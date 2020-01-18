@@ -38,7 +38,7 @@ d3.json("../data/PIT").then(data => {
             data: homelessness
             },
             {
-              name: `Available Housing for Homeless in ${fullStateName}`,
+              name: `Total Year Round Beds for Homeless in ${fullStateName}`,
               data: beds
             }
         ],
