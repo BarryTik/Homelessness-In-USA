@@ -43,16 +43,24 @@ function updateYear(year){
     //console.log(statesData["features"][i]["properties"]["homeless"]);
     extentTester.push(homelessData[stateAbbr][year]);
   }
-  var extentHomeless = d3.extent(extentTester);
-  //console.log(extentHomeless);
+  
 }
 var homelessData = {}
-var year = "2007";
 var extentTester = [];
 d3.json("../data/PIT").then(data => {
   //console.log("PIT Homeless Data");
   homelessData = data;
   //console.log(homelessData);
+  
+
+  var years = Object.keys(homelessData[Object.keys(homelessData)[0]]);
+  for( var j=0; j<statesData["features"]["length"]; j++) {
+    var year = years[j];
+    updateYear(year);
+  }
+  var extentHomeless = d3.extent(extentTester);
+  console.log(extentHomeless);
+  var maxHomeless = extentHomeless[1];
 
   
 
@@ -69,17 +77,22 @@ d3.json("../data/PIT").then(data => {
 
 
     
-  var layer2019 = L.geoJson(statesData);
   
 
   function getColor(d) {
 
-    return d > 100000 ? "#08306b":
-          d > 75000 ? "#084594" :
-          d > 50000 ? "#2171b5" :
-          d > 25000 ? "#4292c6" :
-          d > 5000 ? "#6baed6" :
-          d > 1000 ? "#9ecae1" :
+    return d > (12*maxHomeless/20) ? "#08306b": 
+          d > (11*maxHomeless/20) ? "#183e76":
+          d > (10*maxHomeless/20) ? "#284d81":
+          d > (9*maxHomeless/20) ? "#385b8c":
+          d > (8*maxHomeless/20) ? "#476997":
+          d > (7*maxHomeless/20) ? "#5777a2":
+          d > (6*maxHomeless/20) ? "#6785ad":
+          d > (5*maxHomeless/20) ? "#7794b8" :
+          d > (4*maxHomeless/20) ? "#87a2c3" :
+          d > (3*maxHomeless/20) ? "#97b0ce" :
+          d > (2*maxHomeless/20) ? "#a6bed9" :
+          d > (maxHomeless/20) ? "#b6cde4" :
                     "#c6dbef";
   } 
 
@@ -131,7 +144,7 @@ d3.json("../data/PIT").then(data => {
 
   function onEachFeature(feature, layer) {
     layer.bindPopup("<b>State: </b>" + feature.properties.name + "<br><b>Homeless Count:</b> " +
-      feature.properties.homeless + "<br><a href = ../" + feature.properties.name +"> Data by Year</a> "
+      feature.properties.homeless + "<br><a href = ../" + nameToAbbr(feature.properties.name) +"> Data by Year</a> "
       );
   }
 
@@ -216,21 +229,22 @@ d3.json("../data/PIT").then(data => {
   //console.log(layer2019);
   //console.log(layer2007);
 
+ 
 
   var baseMaps = {
-    Homeless2019: layer2019,
-    Homeless2018: layer2018,
-    Homeless2017: layer2017,
-    Homeless2016: layer2016,
-    Homeless2015: layer2015,
-    Homeless2014: layer2014,
-    Homeless2013: layer2013,
-    Homeless2012: layer2012,
-    Homeless2011: layer2011,
-    Homeless2010: layer2010,
-    Homeless2009: layer2009,
-    Homeless2008: layer2008,
-    Homeless2007: layer2007
+    2019: layer2019,
+    2018: layer2018,
+    2017: layer2017,
+    2016: layer2016,
+    2015: layer2015,
+    2014: layer2014,
+    2013: layer2013,
+    2012: layer2012,
+    2011: layer2011,
+    2010: layer2010,
+    2009: layer2009,
+    2008: layer2008,
+    2007: layer2007
   }
 
 
@@ -255,8 +269,8 @@ d3.json("../data/PIT").then(data => {
     var legend = L.control({ position: "bottomright" });
     legend.onAdd = function() {
       var div = L.DomUtil.create("div", "info legend");
-          grades = [0, 1000, 5000, 25000, 50000, 75000, 10000],
-          colors = ["#eff3ff", "#c6dbef", "#9ecae1", "#6baed6", "#4292c6", "#2171b5", "#084594"],
+          grades = [0, maxHomeless/20, 2*maxHomeless/20, 3*maxHomeless/20, 4*maxHomeless/20, 5*maxHomeless/20, 6*maxHomeless/20, 7*maxHomeless/20, 8*maxHomeless/20, 9*maxHomeless/20, 10*maxHomeless/20, 11*maxHomeless/20, Math.round(12*maxHomeless/20)],
+          colors = ["#c6dbef", "#b6cde4", "#a6bed9", "#97b0ce", "#87a2c3", "#7794b8", "#6785ad","#5777a2","#476997","#385b8c","#284d81","#183e76","#08306b"],
           labels = [];
 
       // Add min & max

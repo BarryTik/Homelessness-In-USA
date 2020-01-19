@@ -65,7 +65,7 @@ d3.json("../data/PIT").then(data => {
             curve: 'smooth'
         },
         title: {
-            text: `Number of Homeless in ${fullStateName}`,
+            text: '',
             align: 'left'
         },
         grid: {
