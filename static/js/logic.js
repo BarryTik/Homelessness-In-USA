@@ -45,6 +45,15 @@ function updateYear(year){
   }
   
 }
+
+//https://stackoverflow.com/questions/7342957/how-do-you-round-to-1-decimal-place-in-javascript
+function round(value, precision) {
+  var multiplier = Math.pow(10, precision || 0);
+  return Math.round(value * multiplier) / multiplier;
+}
+
+
+
 var homelessData = {}
 var extentTester = [];
 d3.json("../data/PIT").then(data => {
@@ -61,7 +70,10 @@ d3.json("../data/PIT").then(data => {
   var extentHomeless = d3.extent(extentTester);
   console.log(extentHomeless);
   var maxHomeless = extentHomeless[1];
-
+  var root = Math.pow(maxHomeless, 1/12);
+  var base = round(root,1);
+  divisions = [0,Math.pow(base,7), Math.pow(base,8), Math.pow(base,9), Math.pow(base,10), Math.pow(base,11), Math.pow(base,12)];
+  console.log(divisions);
   
 
   // Creating map object
@@ -81,18 +93,18 @@ d3.json("../data/PIT").then(data => {
 
   function getColor(d) {
 
-    return d > (12*maxHomeless/20) ? "#08306b": 
-          d > (11*maxHomeless/20) ? "#183e76":
-          d > (10*maxHomeless/20) ? "#284d81":
-          d > (9*maxHomeless/20) ? "#385b8c":
-          d > (8*maxHomeless/20) ? "#476997":
-          d > (7*maxHomeless/20) ? "#5777a2":
-          d > (6*maxHomeless/20) ? "#6785ad":
-          d > (5*maxHomeless/20) ? "#7794b8" :
-          d > (4*maxHomeless/20) ? "#87a2c3" :
-          d > (3*maxHomeless/20) ? "#97b0ce" :
-          d > (2*maxHomeless/20) ? "#a6bed9" :
-          d > (maxHomeless/20) ? "#b6cde4" :
+    return d > divisions[6] ? "#08306b": 
+
+          d > divisions[5] ? "#284d81":
+ 
+          d > divisions[4] ? "#476997":
+
+          d > divisions[3] ? "#6785ad":
+
+          d > divisions[2] ? "#87a2c3" :
+   
+          d > divisions[1] ? "#a6bed9" :
+ 
                     "#c6dbef";
   } 
 
@@ -103,7 +115,7 @@ d3.json("../data/PIT").then(data => {
         opacity: 1,
         color: 'white',
         dashArray: '2',
-        fillOpacity: 0.7
+        fillOpacity: 0.8
     };
   }
   // var geojson = L.geoJson(statesData, {style: style});
@@ -269,12 +281,12 @@ d3.json("../data/PIT").then(data => {
     var legend = L.control({ position: "bottomright" });
     legend.onAdd = function() {
       var div = L.DomUtil.create("div", "info legend");
-          grades = [0, maxHomeless/20, 2*maxHomeless/20, 3*maxHomeless/20, 4*maxHomeless/20, 5*maxHomeless/20, 6*maxHomeless/20, 7*maxHomeless/20, 8*maxHomeless/20, 9*maxHomeless/20, 10*maxHomeless/20, 11*maxHomeless/20, Math.round(12*maxHomeless/20)],
-          colors = ["#c6dbef", "#b6cde4", "#a6bed9", "#97b0ce", "#87a2c3", "#7794b8", "#6785ad","#5777a2","#476997","#385b8c","#284d81","#183e76","#08306b"],
+          grades = [0, divisions[1], divisions[2], divisions[3], divisions[4], divisions[5], Math.round(divisions[6])],
+          colors = ["#c6dbef", "#a6bed9", "#87a2c3", "#6785ad", "#476997", "#284d81", "#08306b"],
           labels = [];
 
       // Add min & max
-      var legendInfo = "<h1>Homeless Population</h1>"+
+      var legendInfo = "<h4>Homeless Population</h4>"+
         "<div class=\"labels\">" +
           "<div class=\"min\">" + grades[0] + "</div>" +
           "<div class=\"max\">" + grades[grades.length - 1] + "</div>"
