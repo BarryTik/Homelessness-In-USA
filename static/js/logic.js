@@ -95,7 +95,7 @@ function onEachFeature(feature, layer) {
 
 function onEachFeature(feature, layer) {
   layer.bindPopup("<b>State: </b>" + feature.properties.name + "<br><b>Homeless Count:</b> " +
-    feature.properties.homeless + "<br><a href = ../" + feature.properties.name +"> Data by Year</a> "
+    feature.properties.homeless + "<br><a href = ../" + feature.properties.name +"> Graph by Year</a> "
     );
 }
 
@@ -133,11 +133,18 @@ geojson = L.geoJson(statesData, {
 
   // Adding legend to the map
   legend.addTo(myMap);
-  
-//   L.control.timelineSlider({
-//     timelineItems: ["Day 1", "The Next Day", "Amazing Event", "1776", "12/22/63", "1984"],
-//     extraChangeMapParams: {greeting: "Hello World!"}, 
-//     changeMap: changeMapFunction })
-// .addTo(mymap);
+
+var testlayer = L.geoJson(statesData);
+var sliderControl = L.control.sliderControl({position: "topright", layer: testlayer});
+
+map.addControl(sliderControl);
+
+sliderControl.startSlider();
+
+L.control.TimeLineSlider({
+    timelineItems: ["Day 1", "The Next Day", "Amazing Event", "1776", "12/22/63", "1984"],
+    extraChangeMapParams: {greeting: "Hello World!"}, 
+    changeMap: changeMapFunction })
+sliderControl.addTo(mymap);
 
   
