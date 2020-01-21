@@ -1,0 +1,20 @@
+
+.display-4 {
+  text-align: center;
+  color: cadetblue;
+}
+
+.nav {
+  background: cadetblue;
+    color: white;
+    height: 100px;
+}
+
+.nav-link {
+  color: white;
+  font-size: 28px;
+}
+
+.nav-item {
+  padding-top: 20px;
+}
