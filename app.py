@@ -10,7 +10,15 @@ from sqlalchemy import create_engine, func
 stateNames = {'AK': 'ALASKA', 'AL': 'ALABAMA', 'AR': 'ARKANSAS', 'AZ': 'ARIZONA', 'CA': 'CALIFORNIA', 'CO': 'COLORADO', 'CT': 'CONNECTICUT', 'DC': 'DISTRICT OF COLUMBIA', 'DE': 'DELAWARE', 'FL': 'FLORIDA', 'GA': 'GEORGIA', 'HI': 'HAWAII', 'IA': 'IOWA', 'ID': 'IDAHO', 'IL': 'ILLINOIS', 'IN': 'INDIANA', 'KS': 'KANSAS', 'KY': 'KENTUCKY', 'LA': 'LOUISIANA', 'MA': 'MASSACHUSETTS', 'MD': 'MARYLAND', 'ME': 'MAINE', 'MI': 'MICHIGAN', 'MN': 'MINNESOTA', 'MO': 'MISSOURI', 'MS': 'MISSISSIPPI', 'MT': 'MONTANA', 'NC': 'NORTH CAROLINA', 'ND': 'NORTH DAKOTA', 'NE': 'NEBRASKA', 'NH': 'NEW HAMPSHIRE', 'NJ': 'NEW JERSEY', 'NM': 'NEW MEXICO', 'NV': 'NEVADA', 'NY': 'NEW YORK', 'OH': 'OHIO', 'OK': 'OKLAHOMA', 'OR': 'OREGON', 'PA': 'PENNSYLVANIA', 'PR': 'PUERTO RICO', 'RI': 'RHODE ISLAND', 'SC': 'SOUTH CAROLINA', 'SD': 'SOUTH DAKOTA', 'TN': 'TENNESSEE', 'TX': 'TEXAS', 'UT': 'UTAH', 'VA': 'VIRGINIA', 'VT': 'VERMONT', 'WA': 'WASHINGTON', 'WI': 'WISCONSIN', 'WV': 'WEST VIRGINIA', 'WY': 'WYOMING'}
 
 username = "postgres"
+<<<<<<< HEAD
 password = "SQLBarry"
+=======
+<<<<<<< HEAD
+password = "postgres"
+=======
+password = "53uLWg4^d3P8yYZJ"
+>>>>>>> b6c627a8eb6ea2e29f5959a953898a45fd90c71a
+>>>>>>> 7fd629d1d36a0ff4561d462f80031a9270a607c6
 engine = create_engine(f'postgresql://{username}:{password}@localhost:5432/HomelessOwl_db')
 print(engine)
 
@@ -21,10 +29,15 @@ Base.prepare(engine, reflect=True)
 # print(Base)
 homelessPIT = Base.classes.pit
 homelessHIC = Base.classes.hic
+<<<<<<< HEAD
 homeless = Base.classes.homeless 
 population = Base.classes.population
 
 
+=======
+populationcensus = Base.classes.populationcensus
+overallpit = Base.classes.overallpit
+>>>>>>> 7fd629d1d36a0ff4561d462f80031a9270a607c6
 
 def uniform(input):
     if input.upper() in stateNames:
@@ -113,6 +126,7 @@ def dataHIC():
 
     return jsonify(HIC_data)
 
+<<<<<<< HEAD
 @app.route("/data")
 def data():
     print("data page requested")
@@ -170,6 +184,76 @@ def data():
 @app.route("/about")
 def about():
     return render_template("about.html")
+=======
+@app.route("/data/populationcensus")
+def dataCensus():
+    print("Census data page requested")
+    session = Session(engine)
+
+    results = session.query(populationcensus.state, populationcensus.regions, populationcensus.populationestimate, populationcensus.year).all() 
+                            
+    session.close()
+
+    #print(results)
+  
+    Census_data = {}
+    for item in results:
+        state = item[0]
+        regions = item[1]
+        populationestimate = item[2]
+        year = item[3]
+
+        found = False
+        for key in Census_data:
+            if state == key:
+                Census_data[key][year]=populationestimate
+                found = True
+        if not found:
+            Census_data[state] = {year: populationestimate}
+
+#     print(Census_data)
+
+    return jsonify(Census_data)
+
+
+
+@app.route("/data/overallpit")
+def Overall_PIT_data():
+    print("OverallPit data page requested")
+    session = Session(engine)
+
+    results = session.query(overallpit.state, overallpit.overallhomeless, overallpit.shelteredtotalhomeless, overallpit.overallhomelessindividuals, 
+                            overallpit.overallhomelesspeopleinfamilies, overallpit.overallchronicallyhomeless, overallpit.overallhomelessveterans, overallpit.year).all() 
+                            
+    session.close()
+
+    #print(results)
+  
+    Overall_PIT_data = {}
+    for item in results:
+        state = item[0]
+        overallhomeless = item[1]
+        shelteredtotalhomeless = item[2]
+        overallhomelessindividuals = item[3]
+        overallhomelesspeopleinfamilies = item[4]
+        overallchronicallyhomeless = item[5]
+        overallhomelessveterans = item[6]
+        year = item[7]
+
+        found = False
+        for key in Overall_PIT_data:
+            if state == key:
+                Overall_PIT_data[key][year]=overallhomeless
+                found = True
+        if not found:
+            Overall_PIT_data[state] = {year: overallhomeless}
+
+#     print(Overall_PIT_data)
+
+    return jsonify(Overall_PIT_data)
+
+
+>>>>>>> 7fd629d1d36a0ff4561d462f80031a9270a607c6
 
 if __name__ =="__main__":
     app.run(debug=True)

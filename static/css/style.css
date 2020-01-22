@@ -25,30 +25,20 @@ html {
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
 }
 
-.legend ul {
-  padding: 0;
-  margin: 0;
-  clear: both;
-  list-style-type: none;
-}
-
-.legend li {
-  display: inline-block;
-  width: 30px;
-  height: 22px;
-}
-
-.legend .min {
-  float: left;
-  padding-bottom: 5px;
-}
-
-.legend .max {
-  float: right;
-}
-
-h1 {
+.display-4 {
   text-align: center;
+  color: cadetblue;
+}
+
+.nav {
+  background: cadetblue;
+    color: white;
+    height: 100px;
+}
+
+.nav-link {
+  color: white;
+  font-size: 28px;
 }
 
 .legend {
@@ -97,4 +87,8 @@ h1 {
 .about {
   text-align: right;
   margin-right: 10px;
+}
+
+.nav-item {
+  padding-top: 20px;
 }
