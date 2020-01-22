@@ -3,8 +3,8 @@ body {
   margin: 0;
 }
 
-#map,
-body,
+
+#body,
 html {
   height: 100%;
 }
@@ -61,4 +61,40 @@ h1 {
   float: left;
   margin-right: 8px;
   opacity: 0.7;
+}
+
+.fill {
+  flex: 1 1 auto;
+}
+
+.navbar {
+ 
+  margin-top: 0px;
+  margin-bottom: 0px;
+  margin-right: 100px;
+  margin-left: 100px;
+
+} 
+
+#map {
+  position: relative;
+  border: 1px solid black;
+  border-radius: 8px;
+  height: 460px; 
+  width: 100%;  
+}
+
+.text1 {
+  margin-top: 40px;
+  font-size: 35px;
+}
+
+.text2 {
+  margin-top: 20px;
+  font-size: 25px;
+}
+
+.about {
+  text-align: right;
+  margin-right: 10px;
 }
