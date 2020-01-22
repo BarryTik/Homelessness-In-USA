@@ -372,8 +372,8 @@ function init(){
         .text(year)
         .property("value", year);
     })
-    updateLineChart("AK");
-    updateRadialChart("AK","2007");
+    initializeLineChart("AK");
+    initializeRadialChart("AK","2007");
     updateInfoBox("AK","2007");
     changeFavicon(`../static/icons/AK.ico`)
   })
@@ -389,8 +389,8 @@ function optionChanged(){
   changeFavicon(`../static/icons/${state}.ico`)
 }
 
-function updateLineChart(state){
-  console.log(`Updating Line Chart: State = ${state}`);
+function initializeLineChart(state){
+  console.log(`Initializing Line Chart: State = ${state}`);
   var stateName = stateNames[state];
   var years = Object.keys(dataset[state]);
   var homelessness = [];
@@ -479,7 +479,7 @@ function updateLineChart(state){
 
 }
 
-function updateRadialChart(state,year){
+function initializeRadialChart(state,year){
 
   console.log(`Updating Radial Chart: State = ${state}, Year = ${year}`)
   var stateName = stateNames[state];
@@ -525,7 +525,7 @@ function updateRadialChart(state,year){
     colors: ["#4292c6", "#084594", "#08306b", "#545454", "#123456", "#7890ab"],  
   };
 
-    var chart = new ApexCharts(document.querySelector("#radialchart"), options);
+    var chart = new ApexCharts(document.querySelector("#radial"), options);
     chart.render();  
 }
 
@@ -542,5 +542,18 @@ function updateInfoBox(state,year){
   d3.select(".text2").text(approximateInfo);
 }
 
+function updateLineChart(state){
+  console.log(`Updating Line Chart: State = ${state}`);
+  d3.select("#chart").remove();
+  d3.select("#lineChart").append("div").attr("id","chart");
+  initializeLineChart(state);
+}
+
+function updateRadialChart(state,year){
+  console.log(`Updating Radial Chart: State = ${state}, Year = ${year}`);
+  d3.select("#radial").remove();
+  d3.select("#radialChart").append("div").attr("id","radial");
+  initializeRadialChart(state, year);
+}
 
 init();
