@@ -82,9 +82,19 @@
       </div>
       <div class="col-md-2">
         <div class="well">
-          <h5>State.:</h5>
-          <select id="selDataset"></select> <!--onchange="optionChanged(this.value)"></select>-->
+          <h4>Choose a State:</h4>
+          <select id="selDataset"onchange="optionChanged()"></select>
+          <br>
+          <h4>Choose a Year:</h4>
+          <select id="selYear"onchange="optionChanged()"></select>
         </div>
+      </div>
+      <div class="col-md-4">
+        <div class="about">
+          <a href="/about">About This Dashboard</a>
+        </div>
+        <div class="text1"></div>
+        <div class="text2"></div>
       </div>
     </div>
 
@@ -93,7 +103,7 @@
         <div id="chart"></div>
       </div>
       <div class="col-md-6">
-        "TEST"
+        <div id="radialchart"></div>
       </div>
     </div>
 

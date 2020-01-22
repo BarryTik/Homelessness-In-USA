@@ -15,8 +15,8 @@
 stateNames = {'AK': 'ALASKA', 'AL': 'ALABAMA', 'AR': 'ARKANSAS', 'AZ': 'ARIZONA', 'CA': 'CALIFORNIA', 'CO': 'COLORADO', 'CT': 'CONNECTICUT', 'DC': 'DISTRICT OF COLUMBIA', 'DE': 'DELAWARE', 'FL': 'FLORIDA', 'GA': 'GEORGIA', 'HI': 'HAWAII', 'IA': 'IOWA', 'ID': 'IDAHO', 'IL': 'ILLINOIS', 'IN': 'INDIANA', 'KS': 'KANSAS', 'KY': 'KENTUCKY', 'LA': 'LOUISIANA', 'MA': 'MASSACHUSETTS', 'MD': 'MARYLAND', 'ME': 'MAINE', 'MI': 'MICHIGAN', 'MN': 'MINNESOTA', 'MO': 'MISSOURI', 'MS': 'MISSISSIPPI', 'MT': 'MONTANA', 'NC': 'NORTH CAROLINA', 'ND': 'NORTH DAKOTA', 'NE': 'NEBRASKA', 'NH': 'NEW HAMPSHIRE', 'NJ': 'NEW JERSEY', 'NM': 'NEW MEXICO', 'NV': 'NEVADA', 'NY': 'NEW YORK', 'OH': 'OHIO', 'OK': 'OKLAHOMA', 'OR': 'OREGON', 'PA': 'PENNSYLVANIA', 'PR': 'PUERTO RICO', 'RI': 'RHODE ISLAND', 'SC': 'SOUTH CAROLINA', 'SD': 'SOUTH DAKOTA', 'TN': 'TENNESSEE', 'TX': 'TEXAS', 'UT': 'UTAH', 'VA': 'VIRGINIA', 'VT': 'VERMONT', 'WA': 'WASHINGTON', 'WI': 'WISCONSIN', 'WV': 'WEST VIRGINIA', 'WY': 'WYOMING'}
 
 function nameToAbbr(name) {
-    var abbr = ""
-    var found = false
+    var abbr = "";
+    var found = false;
     for(i=0; i< Object.keys(stateNames).length; i++){
         if(name.toUpperCase() === Object.values(stateNames)[i]){
             abbr = Object.keys(stateNames)[i];
@@ -31,7 +31,34 @@ function nameToAbbr(name) {
     }
 }
 
+function abbrToName(abbr){
+  var name = "";
+  var found = false;
+  for(i=0; i<Object.keys(stateNames).length; i++){
+    if(abbr.toUpperCase() === Object.keys(stateNames)[i]){
+      name = Object.values(stateNames[i]);
+      found = true;
+    }
+  }
+  if(found){
+    return name;
+  }
+  else{
+    return "ERROR";
+  }
+}
 
+function bounds(array1, array2) {
+  var newArray = []
+
+  for(i=0; i< array1.length; i++){
+      newArray.push(array1[i]);
+  };
+  for(i=0; i< array1.length; i++){
+      newArray.push(array2[i]);
+  };
+  return d3.extent(newArray);
+}
 
 function updateYear(year){
   for(var i=0; i<statesData["features"]["length"]; i++){
@@ -52,11 +79,20 @@ function round(value, precision) {
   return Math.round(value * multiplier) / multiplier;
 }
 
-function onMapClick(feature) {
-  console.log("click");
-  console.log(feature.properties.name);
-}
+//https://stackoverflow.com/questions/260857/changing-website-favicon-dynamically
+document.head = document.head || document.getElementsByTagName('head')[0];
 
+function changeFavicon(src) {
+ var link = document.createElement('link'),
+     oldLink = document.getElementById('dynamic-favicon');
+ link.id = 'dynamic-favicon';
+ link.rel = 'shortcut icon';
+ link.href = src;
+ if (oldLink) {
+  document.head.removeChild(oldLink);
+ }
+ document.head.appendChild(link);
+}
 var myMap;
 
 var homelessData = {}
@@ -73,12 +109,10 @@ d3.json("../data/PIT").then(data => {
     updateYear(year);
   }
   var extentHomeless = d3.extent(extentTester);
-  console.log(extentHomeless);
   var maxHomeless = extentHomeless[1];
   var root = Math.pow(maxHomeless, 1/12);
   var base = round(root,1);
   divisions = [0,Math.pow(base,7), Math.pow(base,8), Math.pow(base,9), Math.pow(base,10), Math.pow(base,11), Math.pow(base,12)];
-  console.log(divisions);
   
 
   // Creating map object
@@ -161,7 +195,7 @@ d3.json("../data/PIT").then(data => {
 
   function onEachFeature(feature, layer) {
     layer.bindPopup("<b>State: </b>" + feature.properties.name + "<br><b>Homeless Count:</b> " +
-      feature.properties.homeless + "<br><a href = ../" + nameToAbbr(feature.properties.name) +"> Data by Year</a> "
+      feature.properties.homeless //+ "<br><a href = ../" + nameToAbbr(feature.properties.name) +"> Data by Year</a> "
       );
   }
 
@@ -279,13 +313,12 @@ d3.json("../data/PIT").then(data => {
     zoom: 4,
     layers: [light, layer2019]
   });
-  console.log(myMap);
 
   L.control.layers(baseMaps).addTo(myMap);
     
 
     // // Set up the legend, horizontal legend
-    var legend = L.control({ position: "bottomright" });
+    var legend = L.control({ position: "bottomleft" });
     legend.onAdd = function() {
       var div = L.DomUtil.create("div", "info legend");
           grades = [extentHomeless[0], divisions[1], divisions[2], divisions[3], divisions[4], divisions[5], Math.round(divisions[6])],
@@ -312,132 +345,202 @@ d3.json("../data/PIT").then(data => {
     // Adding legend to the map
     legend.addTo(myMap);
 
+    // myMap.on('click',onMapClick);
     
 
 
 });
 
+var dataset = {}
+function init(){
+  console.log("initializing dashboard");
+  var stateSelector = d3.select("#selDataset");
+  var yearSelector = d3.select("#selYear");
 
-// Line Chart
+  d3.json("/data").then(function(jsonData){
+    dataset = jsonData;
 
-
-
-
-
-function bounds(array1, array2) {
-  var newArray = []
-
-  for(i=0; i< array1.length; i++){
-      newArray.push(array1[i]);
-  };
-  for(i=0; i< array1.length; i++){
-      newArray.push(array2[i]);
-  };
-  return d3.extent(newArray);
+    var options = Object.keys(dataset);
+    options.forEach((state)=> {
+      stateSelector.append("option")
+        .text(state)
+        .property("value", state);
+    })
+    var yearOptions = Object.keys(dataset["AK"]);
+    yearOptions.forEach((year)=> {
+      yearSelector.append("option")
+        .text(year)
+        .property("value", year);
+    })
+    updateLineChart("AK");
+    updateRadialChart("AK","2007");
+    updateInfoBox("AK","2007");
+    changeFavicon(`../static/icons/AK.ico`)
+  })
 }
 
-stateName = "MN";
-fullStateName = "Minnesota";
-console.log(stateName);
-console.log(fullStateName);
+function optionChanged(){
+  var state = document.getElementById('selDataset').value;
+  var year = document.getElementById('selYear').value;
+  console.log(`Dropdown changed to ${state}, ${year}`);
+  updateLineChart(state);
+  updateRadialChart(state,year);
+  updateInfoBox(state,year);
+  changeFavicon(`../static/icons/${state}.ico`)
+}
 
-d3.json("../data/PIT").then(data => {
-  console.log("start PIT");
-  var homelessData = data[stateName];
-  console.log(homelessData);
-  d3.json("../data/HIC").then(data2 => {
-      console.log("start HIC");
-      var bedsData = data2[stateName];
-      console.log(bedsData);
+function updateLineChart(state){
+  console.log(`Updating Line Chart: State = ${state}`);
+  var stateName = stateNames[state];
+  var years = Object.keys(dataset[state]);
+  var homelessness = [];
+  for(i=0; i< years.length; i++){
+    homelessness.push(dataset[state][years[i]]["categories"]["overall homeless"]);
+  }
+  var beds = [];
+  for (i=0; i< years.length; i++){
+    beds.push(dataset[state][years[i]]["beds"])
+  }
 
-
-      var years = Object.keys(homelessData);
-      var homelessness = Object.values(homelessData);
-      var extentHomelessness = d3.extent(homelessness);
-      var beds = Object.values(bedsData);
-      var extentBeds = d3.extent(beds);
-      console.log(extentHomelessness);
-
-      var options = {
-          series: [
-          {
-          name: `Number of Homeless in ${fullStateName}`,
-          data: homelessness
-          },
-          {
-            name: `Total Year Round Beds for Homeless in ${fullStateName}`,
-            data: beds
-          }
-      ],
-          chart: {
-          height: 460,
-          type: 'line',
-          dropShadow: {
-          enabled: true,
-          color: '#000',
-          top: 18,
-          left: 7,
-          blur: 10,
-          opacity: 0.2
-          },
-          toolbar: {
-          show: false
-          }
+  var options = {
+      series: [
+      {
+      name: `Number of Homeless in ${stateName}`,
+      data: homelessness
       },
-      colors: ['#77B6EA', '#545454'],
-      dataLabels: {
-          enabled: true,
-      },
-      stroke: {
-          curve: 'smooth'
-      },
-      title: {
-          text: `Homelessness in ${fullStateName}`,
-          align: 'left'
-      },
-      grid: {
-          borderColor: '#e7e7e7',
-          row: {
-          colors: ['#f3f3f3', 'transparent'], // takes an array which will be repeated on columns
-          opacity: 0.5
-          },
-      },
-      markers: {
-          size: 1
-      },
-      xaxis: {
-          categories: years,
-          title: {
-          text: 'Year'
-          }
-      },
-      yaxis: {
-          title: {
-          text: 'Number'
-          },
-          min: bounds(extentHomelessness,extentBeds)[0]*0.95,
-          max: bounds(extentHomelessness,extentBeds)[1]*1.03 
-      },
-      legend: {
-          position: 'top',
-          horizontalAlign: 'right',
-          floating: true,
-          offsetY: -25,
-          offsetX: -5
+      {
+        name: `Total Year Round Beds for Homeless in ${stateName}`,
+        data: beds
       }
-      };
+  ],
+      chart: {
+      height: 460,
+      type: 'line',
+      dropShadow: {
+      enabled: true,
+      color: '#000',
+      top: 18,
+      left: 7,
+      blur: 10,
+      opacity: 0.2
+      },
+      toolbar: {
+      show: false
+      }
+  },
+  colors: ['#77B6EA', '#545454'],
+  dataLabels: {
+      enabled: true,
+  },
+  stroke: {
+      curve: 'smooth'
+  },
+  title: {
+      text: '',//`Homelessness in ${stateName}`,
+      align: 'left'
+  },
+  grid: {
+      borderColor: '#e7e7e7',
+      row: {
+      colors: ['#f3f3f3', 'transparent'], // takes an array which will be repeated on columns
+      opacity: 0.5
+      },
+  },
+  markers: {
+      size: 1
+  },
+  xaxis: {
+      categories: years,
+      title: {
+      text: 'Year'
+      }
+  },
+  yaxis: {
+      title: {
+      text: 'Number'
+      },
+      min: bounds(homelessness, beds)[0]*0.95,
+      max: bounds(homelessness, beds)[1]*1.03 
+  },
+  legend: {
+      position: 'top',
+      horizontalAlign: 'right',
+      floating: true,
+      offsetY: -25,
+      offsetX: -5
+  }
+  };
 
-      var chart = new ApexCharts(document.querySelector("#chart"), options);
-      chart.render();
+  var chart = new ApexCharts(document.querySelector("#chart"), options);
+  chart.render();
 
 
 
-  }).catch(function(error){
-      console.log(error);
-  });
 
-  
+}
 
-}).catch(function(error){
-  console.log(error);
-});
+function updateRadialChart(state,year){
+
+  console.log(`Updating Radial Chart: State = ${state}, Year = ${year}`)
+  var stateName = stateNames[state];
+
+  var totalHomeless = dataset[state][year]["categories"]["overall homeless"]  
+  var percentUnsheltered = round(100*dataset[state][year]["categories"]["unsheltered homeless"]/totalHomeless,2);
+  var percentSheltered = round(100*dataset[state][year]["categories"]["sheltered homeless"]/totalHomeless,2);
+  var percentInFamilies = round(100*dataset[state][year]["categories"]["in family homeless"]/totalHomeless,2);
+  var percentIndivuals = round(100*dataset[state][year]["categories"]["individual homeless"]/totalHomeless,2);
+  var percentVeteran = round(100*dataset[state][year]["categories"]["veteran homeless"]/totalHomeless,2);
+  var percentChronic = round(100*dataset[state][year]["categories"]["chronic homeless"]/totalHomeless,2);
+
+
+
+  var options = {
+      series: [percentUnsheltered, percentSheltered, percentInFamilies, percentIndivuals, percentVeteran, percentChronic],
+      chart: {
+      
+      height: 520,
+      type: 'radialBar',
+    },
+    plotOptions: {
+      radialBar: {
+        dataLabels: {
+          name: {
+            fontSize: '18px',
+          },
+          value: {
+            fontSize: '18px',
+          },
+          total: {
+            show: true,
+            label: `Total Homeless in ${stateName} in ${year}`,
+            formatter: function (w) {
+              // By default this function returns the average of all series. The below is just an example to show the use of custom formatter function
+              return totalHomeless
+            }
+          }
+        }
+      }
+    },
+    labels: ["Unsheltered Homeless", "Sheltered Homeless",  "Homeless People in Families", "Homeless Individuals", "Homeless Veterans", "Chronically Homeless People"],
+    colors: ["#4292c6", "#084594", "#08306b", "#545454", "#123456", "#7890ab"],  
+  };
+
+    var chart = new ApexCharts(document.querySelector("#radialchart"), options);
+    chart.render();  
+}
+
+function updateInfoBox(state,year){
+  console.log(`Updating Info Box: State = ${state}, Year = ${year}`);
+  var stateName = stateNames[state];
+  var homelessness = dataset[state][year]["categories"]["overall homeless"];
+  var totalPopulation = dataset[state][year]["total state population"];
+  var percentHomeless = homelessness/totalPopulation;
+  var info = `${round(100*percentHomeless,3)}% of ${stateName} was homeless in ${year}.`;
+  var approximation = round(1/percentHomeless,0);
+  var approximateInfo = `That's approximately one person in every ${approximation}`;
+  d3.select(".text1").text(info);
+  d3.select(".text2").text(approximateInfo);
+}
+
+
+init();

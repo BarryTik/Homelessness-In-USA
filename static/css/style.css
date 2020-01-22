@@ -80,6 +80,21 @@ h1 {
   position: relative;
   border: 1px solid black;
   border-radius: 8px;
-  height: 460px;  /* or as desired */
-  width: 100%;  /* This means "100% of the width of its container", the .col-md-8 */
+  height: 460px; 
+  width: 100%;  
+}
+
+.text1 {
+  margin-top: 40px;
+  font-size: 35px;
+}
+
+.text2 {
+  margin-top: 20px;
+  font-size: 25px;
+}
+
+.about {
+  text-align: right;
+  margin-right: 10px;
 }
