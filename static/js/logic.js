@@ -93,285 +93,30 @@ function changeFavicon(src) {
  }
  document.head.appendChild(link);
 }
-var myMap;
-
-var homelessData = {}
-var extentTester = [];
-d3.json("../data/PIT").then(data => {
-  //console.log("PIT Homeless Data");
-  homelessData = data;
-  //console.log(homelessData);
-  
-
-  var years = Object.keys(homelessData[Object.keys(homelessData)[0]]);
-  for( var j=0; j<statesData["features"]["length"]; j++) {
-    var year = years[j];
-    updateYear(year);
-  }
-  var extentHomeless = d3.extent(extentTester);
-  var maxHomeless = extentHomeless[1];
-  var root = Math.pow(maxHomeless, 1/12);
-  var base = round(root,1);
-  divisions = [0,Math.pow(base,7), Math.pow(base,8), Math.pow(base,9), Math.pow(base,10), Math.pow(base,11), Math.pow(base,12)];
-  
-
-  // Creating map object
-  
-    
-    // Adding tile layer
-  var light = L.tileLayer("https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}", {
-      attribution: "Map data &copy; <a href=\"https://www.openstreetmap.org/\">OpenStreetMap</a> contributors, <a href=\"https://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA</a>, Imagery © <a href=\"https://www.mapbox.com/\">Mapbox</a>",
-      maxZoom: 18,
-      id: "mapbox.light",
-      accessToken: API_KEY
-    })
 
 
-    
-  
-
-  function getColor(d) {
-
-    return d > divisions[6] ? "#08306b": 
-
-          d > divisions[5] ? "#284d81":
- 
-          d > divisions[4] ? "#476997":
-
-          d > divisions[3] ? "#6785ad":
-
-          d > divisions[2] ? "#87a2c3" :
-   
-          d > divisions[1] ? "#a6bed9" :
- 
-                    "#c6dbef";
-  } 
-
-  function style(feature) {
-    return {
-        fillColor: getColor(feature.properties.homeless),
-        weight: 2,
-        opacity: 1,
-        color: 'white',
-        dashArray: '2',
-        fillOpacity: 0.8
-    };
-  }
-  // var geojson = L.geoJson(statesData, {style: style});
-
-
-  function highlightFeature(e) {
-    var layer = e.target;
-
-    layer.setStyle({
-        weight: 5,
-        color: '#999',
-        dashArray: '1',
-        fillOpacity: 0.7
-    });
-
-    if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
-        layer.bringToFront();
-    }
-  }
-
-  function resetHighlight(e) {
-    geojson.resetStyle(e.target);
-  }
-
-  function zoomToFeature(e) {
-    map.fitBounds(e.target.getBounds());
-  }
-
-  function onEachFeature(feature, layer) {
-    layer.on({
-        mouseover: highlightFeature,
-        mouseout: resetHighlight,
-        click: zoomToFeature
-    });
-  }
-
-  // Binding a pop-up to each layer (need to add in a year layer...)
-
-  function onEachFeature(feature, layer) {
-    layer.bindPopup("<b>State: </b>" + feature.properties.name + "<br><b>Homeless Count:</b> " +
-      feature.properties.homeless //+ "<br><a href = ../" + nameToAbbr(feature.properties.name) +"> Data by Year</a> "
-      );
-  }
-
-  updateYear("2019");  
-  var layer2019 = L.geoJson(statesData, {
-    style: style,
-    onEachFeature: onEachFeature
-  });
-  //console.log(layer2019);
-
-  updateYear("2018");
-  var layer2018 = L.geoJson(statesData, {
-    style: style,
-    onEachFeature: onEachFeature
-  });
-
-  updateYear("2017");
-  var layer2017 = L.geoJson(statesData, {
-    style: style,
-    onEachFeature: onEachFeature
-  });
-
-  updateYear("2016");
-  var layer2016 = L.geoJson(statesData, {
-    style: style,
-    onEachFeature: onEachFeature
-  });
-
-  updateYear("2015");
-  var layer2015 = L.geoJson(statesData, {
-    style: style,
-    onEachFeature: onEachFeature
-  });
-
-  updateYear("2014");
-  var layer2014 = L.geoJson(statesData, {
-    style: style,
-    onEachFeature: onEachFeature
-  });
-
-  updateYear("2013");
-  var layer2013 = L.geoJson(statesData, {
-    style: style,
-    onEachFeature: onEachFeature
-  });
-
-  updateYear("2012");
-  var layer2012 = L.geoJson(statesData, {
-    style: style,
-    onEachFeature: onEachFeature
-  });
-
-  updateYear("2011");
-  var layer2011 = L.geoJson(statesData, {
-    style: style,
-    onEachFeature: onEachFeature
-  });
-
-  updateYear("2010");
-  var layer2010 = L.geoJson(statesData, {
-    style: style,
-    onEachFeature: onEachFeature
-  });
-
-  updateYear("2009");
-  var layer2009 = L.geoJson(statesData, {
-    style: style,
-    onEachFeature: onEachFeature
-  });
-
-  updateYear("2008");
-  var layer2008 = L.geoJson(statesData, {
-    style: style,
-    onEachFeature: onEachFeature
-  });
-
-  updateYear("2007");
-  var layer2007 = L.geoJson(statesData, {
-    style: style,
-    onEachFeature: onEachFeature
-  });
-  //console.log(layer2019);
-  //console.log(layer2007);
-
- 
-
-  var baseMaps = {
-    2019: layer2019,
-    2018: layer2018,
-    2017: layer2017,
-    2016: layer2016,
-    2015: layer2015,
-    2014: layer2014,
-    2013: layer2013,
-    2012: layer2012,
-    2011: layer2011,
-    2010: layer2010,
-    2009: layer2009,
-    2008: layer2008,
-    2007: layer2007
-  }
-
-
-  
-
- 
-
-  // var geojson = L.geoJson(statesData, {
-  //   style: style,
-  //   onEachFeature: onEachFeature
-  // })//.addTo(myMap);
-
-  myMap = L.map("map", {
-    center: [39.50, -98.35],
-    zoom: 4,
-    layers: [light, layer2019]
-  });
-
-  L.control.layers(baseMaps).addTo(myMap);
-    
-
-    // // Set up the legend, horizontal legend
-    var legend = L.control({ position: "bottomleft" });
-    legend.onAdd = function() {
-      var div = L.DomUtil.create("div", "info legend");
-          grades = [extentHomeless[0], divisions[1], divisions[2], divisions[3], divisions[4], divisions[5], Math.round(divisions[6])],
-          colors = ["#c6dbef", "#a6bed9", "#87a2c3", "#6785ad", "#476997", "#284d81", "#08306b"],
-          labels = [];
-
-      // Add min & max
-      var legendInfo = "<h4>Homeless Population</h4>"+
-        "<div class=\"labels\">" +
-          "<div class=\"min\">" + grades[0] + "</div>" +
-          "<div class=\"max\">" + grades[grades.length - 1] + "</div>"
-        "</div>";
-
-      div.innerHTML = legendInfo;
-
-      grades.forEach(function(grades, index) {
-        labels.push("<li style=\"background-color: " + colors[index] + "\"></li>");
-      });
-
-      div.innerHTML += "<ul>" + labels.join("") + "</ul>";
-      return div;
-    };
-
-    // Adding legend to the map
-    legend.addTo(myMap);
-
-    // myMap.on('click',onMapClick);
-    
-
-
-});
 
 var dataset = {}
 function init(){
   console.log("initializing dashboard");
-  var stateSelector = d3.select("#selDataset");
-  var yearSelector = d3.select("#selYear");
+  // var stateSelector = d3.select("#selDataset");
+  // var yearSelector = d3.select("#selYear");
 
   d3.json("/data").then(function(jsonData){
     dataset = jsonData;
 
-    var options = Object.keys(dataset);
-    options.forEach((state)=> {
-      stateSelector.append("option")
-        .text(state)
-        .property("value", state);
-    })
-    var yearOptions = Object.keys(dataset["AK"]);
-    yearOptions.forEach((year)=> {
-      yearSelector.append("option")
-        .text(year)
-        .property("value", year);
-    })
+    // var options = Object.keys(dataset);
+    // options.forEach((state)=> {
+    //   stateSelector.append("option")
+    //     .text(state)
+    //     .property("value", state);
+    // })
+    // var yearOptions = Object.keys(dataset["AK"]);
+    // yearOptions.forEach((year)=> {
+    //   yearSelector.append("option")
+    //     .text(year)
+    //     .property("value", year);
+    // })
     initializeLineChart("AK");
     initializeRadialChart("AK","2007");
     updateInfoBox("AK","2007");
@@ -379,9 +124,17 @@ function init(){
   })
 }
 
-function optionChanged(){
-  var state = document.getElementById('selDataset').value;
-  var year = document.getElementById('selYear').value;
+// function optionChanged(){
+//   var state = document.getElementById('selDataset').value;
+//   var year = document.getElementById('selYear').value;
+//   console.log(`Dropdown changed to ${state}, ${year}`);
+//   updateLineChart(state);
+//   updateRadialChart(state,year);
+//   updateInfoBox(state,year);
+//   changeFavicon(`../static/icons/${state}.ico`)
+// }
+
+function optionChanged(state, year){
   console.log(`Dropdown changed to ${state}, ${year}`);
   updateLineChart(state);
   updateRadialChart(state,year);
@@ -557,3 +310,335 @@ function updateRadialChart(state,year){
 }
 
 init();
+
+
+
+var myMap;
+var layer2019;
+
+var homelessData = {}
+var extentTester = [];
+d3.json("../data/PIT").then(data => {
+  //console.log("PIT Homeless Data");
+  homelessData = data;
+  //console.log(homelessData);
+  
+
+  var years = Object.keys(homelessData[Object.keys(homelessData)[0]]);
+  for( var j=0; j<statesData["features"]["length"]; j++) {
+    var year = years[j];
+    updateYear(year);
+  }
+  var extentHomeless = d3.extent(extentTester);
+  var maxHomeless = extentHomeless[1];
+  var root = Math.pow(maxHomeless, 1/12);
+  var base = round(root,1);
+  divisions = [0,Math.pow(base,7), Math.pow(base,8), Math.pow(base,9), Math.pow(base,10), Math.pow(base,11), Math.pow(base,12)];
+  
+
+  // Creating map object
+  
+    
+    // Adding tile layer
+  var light = L.tileLayer("https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}", {
+      attribution: "Map data &copy; <a href=\"https://www.openstreetmap.org/\">OpenStreetMap</a> contributors, <a href=\"https://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA</a>, Imagery © <a href=\"https://www.mapbox.com/\">Mapbox</a>",
+      maxZoom: 18,
+      id: "mapbox.light",
+      accessToken: API_KEY
+    })
+
+
+    
+  
+
+  function getColor(d) {
+
+    return d > divisions[6] ? "#08306b": 
+
+          d > divisions[5] ? "#284d81":
+ 
+          d > divisions[4] ? "#476997":
+
+          d > divisions[3] ? "#6785ad":
+
+          d > divisions[2] ? "#87a2c3" :
+   
+          d > divisions[1] ? "#a6bed9" :
+ 
+                    "#c6dbef";
+  } 
+
+  function style(feature) {
+    return {
+        fillColor: getColor(feature.properties.homeless),
+        weight: 2,
+        opacity: 1,
+        color: 'white',
+        dashArray: '2',
+        fillOpacity: 0.8
+    };
+  }
+  // var geojson = L.geoJson(statesData, {style: style});
+
+
+  // function highlightFeature(e) {
+  //   var layer = e.target;
+
+  //   layer.setStyle({
+  //       weight: 5,
+  //       color: '#999',
+  //       dashArray: '1',
+  //       fillOpacity: 0.7
+  //   });
+
+  //   if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+  //       layer.bringToFront();
+  //   }
+  // }
+
+  // function resetHighlight(e) {
+  //   geojson.resetStyle(e.target);
+  // }
+
+  // function zoomToFeature(e) {
+  //   map.fitBounds(e.target.getBounds());
+  // }
+
+  // function onEachFeature(feature, layer) {
+  //   layer.on({
+  //       mouseover: highlightFeature,
+  //       mouseout: resetHighlight,
+  //       click: zoomToFeature
+  //   });
+  // }
+
+  // Binding a pop-up to each layer (need to add in a year layer...)
+
+  function onEachFeature(feature, layer) {
+    //console.log(`feature.properties.name = ${feature.properties.name}`)
+    layer.bindPopup("<b>State: </b>" + feature.properties.name + "<br><b>Homeless Count:</b> " +
+      feature.properties.homeless //+ "<br><a href = ../" + nameToAbbr(feature.properties.name) +"> Data by Year</a> "
+      );
+      // layer.on({
+      //   click: console.log("click")
+      // });
+  }
+
+  updateYear("2019");  
+  layer2019 = L.geoJson(statesData, {
+    style: style,
+    onEachFeature: onEachFeature
+  });
+  //console.log(layer2019);
+
+  updateYear("2018");
+  var layer2018 = L.geoJson(statesData, {
+    style: style,
+    onEachFeature: onEachFeature
+  });
+
+  updateYear("2017");
+  var layer2017 = L.geoJson(statesData, {
+    style: style,
+    onEachFeature: onEachFeature
+  });
+
+  updateYear("2016");
+  var layer2016 = L.geoJson(statesData, {
+    style: style,
+    onEachFeature: onEachFeature
+  });
+
+  updateYear("2015");
+  var layer2015 = L.geoJson(statesData, {
+    style: style,
+    onEachFeature: onEachFeature
+  });
+
+  updateYear("2014");
+  var layer2014 = L.geoJson(statesData, {
+    style: style,
+    onEachFeature: onEachFeature
+  });
+
+  updateYear("2013");
+  var layer2013 = L.geoJson(statesData, {
+    style: style,
+    onEachFeature: onEachFeature
+  });
+
+  updateYear("2012");
+  var layer2012 = L.geoJson(statesData, {
+    style: style,
+    onEachFeature: onEachFeature
+  });
+
+  updateYear("2011");
+  var layer2011 = L.geoJson(statesData, {
+    style: style,
+    onEachFeature: onEachFeature
+  });
+
+  updateYear("2010");
+  var layer2010 = L.geoJson(statesData, {
+    style: style,
+    onEachFeature: onEachFeature
+  });
+
+  updateYear("2009");
+  var layer2009 = L.geoJson(statesData, {
+    style: style,
+    onEachFeature: onEachFeature
+  });
+
+  updateYear("2008");
+  var layer2008 = L.geoJson(statesData, {
+    style: style,
+    onEachFeature: onEachFeature
+  });
+
+  updateYear("2007");
+  var layer2007 = L.geoJson(statesData, {
+    style: style,
+    onEachFeature: onEachFeature
+  });
+  //console.log(layer2019);
+  //console.log(layer2007);
+
+  function updateMaps(e) {
+    //console.log(e.target._map._popup._source.feature.properties.name);
+    //console.log(e.target._leaflet_id);
+    var state = nameToAbbr(e.target._map._popup._source.feature.properties.name);
+    //console.log(state);
+    var id = e.target._leaflet_id;
+    var year;
+    switch(id){
+      case 5:
+        year = 2019;
+        break;
+      case 55:
+        year = 2018;
+        break;
+      case 108:
+        year = 2017
+        break;
+      case 161:
+        year = 2016;
+        break;
+      case 214:
+        year = 2015;
+        break;
+      case 267:
+        year = 2014;
+        break;
+      case 320:
+        year = 2013;
+        break;
+      case 373:
+        year = 2012;
+        beark;
+      case 426:
+        year = 2011;
+        break;
+      case 479:
+        year = 2010;
+        break;
+      case 532:
+        year = 2009;
+        break;
+      case 585:
+        year = 2008;
+        break;
+      case 638:
+        year - 2007;
+        break;
+      default:
+        year = 2019;
+    }
+    console.log(`State: ${state}, Year: ${year}`)
+    optionChanged(state, year);
+  }
+
+  layer2019.on("click", updateMaps);
+  layer2018.on("click", updateMaps);
+  layer2017.on("click", updateMaps);
+  layer2016.on("click", updateMaps);
+  layer2015.on("click", updateMaps);
+  layer2014.on("click", updateMaps);
+  layer2013.on("click", updateMaps);
+  layer2012.on("click", updateMaps);
+  layer2011.on("click", updateMaps);
+  layer2010.on("click", updateMaps);
+  layer2009.on("click", updateMaps);
+  layer2008.on("click", updateMaps);
+  layer2007.on("click", updateMaps);
+
+  var baseMaps = {
+    2019: layer2019,
+    2018: layer2018,
+    2017: layer2017,
+    2016: layer2016,
+    2015: layer2015,
+    2014: layer2014,
+    2013: layer2013,
+    2012: layer2012,
+    2011: layer2011,
+    2010: layer2010,
+    2009: layer2009,
+    2008: layer2008,
+    2007: layer2007
+  }
+
+
+  
+
+ 
+
+  // var geojson = L.geoJson(statesData, {
+  //   style: style,
+  //   onEachFeature: onEachFeature
+  // })//.addTo(myMap);
+
+  myMap = L.map("map", {
+    center: [39.50, -98.35],
+    zoom: 4,
+    layers: [light, layer2019]
+  });
+
+  L.control.layers(baseMaps).addTo(myMap);
+    
+
+    // // Set up the legend, horizontal legend
+    var legend = L.control({ position: "bottomleft" });
+    legend.onAdd = function() {
+      var div = L.DomUtil.create("div", "info legend");
+          grades = [extentHomeless[0], divisions[1], divisions[2], divisions[3], divisions[4], divisions[5], Math.round(divisions[6])],
+          colors = ["#c6dbef", "#a6bed9", "#87a2c3", "#6785ad", "#476997", "#284d81", "#08306b"],
+          labels = [];
+
+      // Add min & max
+      var legendInfo = "<h4>Homeless Population</h4>"+
+        "<div class=\"labels\">" +
+          "<div class=\"min\">" + grades[0] + "</div>" +
+          "<div class=\"max\">" + grades[grades.length - 1] + "</div>"
+        "</div>";
+
+      div.innerHTML = legendInfo;
+
+      grades.forEach(function(grades, index) {
+        labels.push("<li style=\"background-color: " + colors[index] + "\"></li>");
+      });
+
+      div.innerHTML += "<ul>" + labels.join("") + "</ul>";
+      return div;
+    };
+
+    // Adding legend to the map
+    legend.addTo(myMap);
+
+    // myMap.on('click',onMapClick);
+    
+
+
+});
+
