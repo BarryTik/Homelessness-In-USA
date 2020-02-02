@@ -117,10 +117,10 @@ function init(){
     //     .text(year)
     //     .property("value", year);
     // })
-    initializeLineChart("AK");
-    initializeRadialChart("AK","2007");
-    updateInfoBox("AK","2007");
-    changeFavicon(`../static/icons/AK.ico`)
+    initializeLineChart("MN");
+    initializeRadialChart("MN","2019");
+    updateInfoBox("MN","2019");
+    changeFavicon(`../static/icons/MN.ico`)
   })
 }
 
@@ -162,7 +162,7 @@ function initializeLineChart(state){
       data: homelessness
       },
       {
-        name: `Total Year Round Beds for Homeless in ${stateName}`,
+        name: `Total Year Round Homeless Shelter Beds in ${stateName}`,
         data: beds
       }
   ],
@@ -265,7 +265,7 @@ function initializeRadialChart(state,year){
           },
           total: {
             show: true,
-            label: `Total Homeless in ${stateName} in ${year}`,
+            label: `Total Homeless in ${nameToAbbr(stateName)} in ${year}`,
             formatter: function (w) {
               // By default this function returns the average of all series. The below is just an example to show the use of custom formatter function
               return totalHomeless
@@ -378,50 +378,11 @@ d3.json("../data/PIT").then(data => {
         fillOpacity: 0.8
     };
   }
-  // var geojson = L.geoJson(statesData, {style: style});
-
-
-  // function highlightFeature(e) {
-  //   var layer = e.target;
-
-  //   layer.setStyle({
-  //       weight: 5,
-  //       color: '#999',
-  //       dashArray: '1',
-  //       fillOpacity: 0.7
-  //   });
-
-  //   if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
-  //       layer.bringToFront();
-  //   }
-  // }
-
-  // function resetHighlight(e) {
-  //   geojson.resetStyle(e.target);
-  // }
-
-  // function zoomToFeature(e) {
-  //   map.fitBounds(e.target.getBounds());
-  // }
-
-  // function onEachFeature(feature, layer) {
-  //   layer.on({
-  //       mouseover: highlightFeature,
-  //       mouseout: resetHighlight,
-  //       click: zoomToFeature
-  //   });
-  // }
-
-  // Binding a pop-up to each layer (need to add in a year layer...)
-
+  
   function onEachFeature(feature, layer) {
-    //console.log(`feature.properties.name = ${feature.properties.name}`)
     layer.bindPopup("<b>State: </b>" + feature.properties.name + "<br><b>Homeless Count:</b> " +
       feature.properties.homeless //+ "<br><a href = ../" + nameToAbbr(feature.properties.name) +"> Data by Year</a> "
       );
-      // layer.on({
-      //   click: console.log("click")
-      // });
   }
 
   updateYear("2019");  
@@ -429,7 +390,7 @@ d3.json("../data/PIT").then(data => {
     style: style,
     onEachFeature: onEachFeature
   });
-  //console.log(layer2019);
+
 
   updateYear("2018");
   var layer2018 = L.geoJson(statesData, {
@@ -502,14 +463,9 @@ d3.json("../data/PIT").then(data => {
     style: style,
     onEachFeature: onEachFeature
   });
-  //console.log(layer2019);
-  //console.log(layer2007);
 
   function updateMaps(e) {
-    //console.log(e.target._map._popup._source.feature.properties.name);
-    //console.log(e.target._leaflet_id);
     var state = nameToAbbr(e.target._map._popup._source.feature.properties.name);
-    //console.log(state);
     var id = e.target._leaflet_id;
     var year;
     switch(id){
@@ -536,7 +492,7 @@ d3.json("../data/PIT").then(data => {
         break;
       case 373:
         year = 2012;
-        beark;
+        break;
       case 426:
         year = 2011;
         break;
@@ -550,7 +506,7 @@ d3.json("../data/PIT").then(data => {
         year = 2008;
         break;
       case 638:
-        year - 2007;
+        year = 2007;
         break;
       default:
         year = 2019;
@@ -589,23 +545,13 @@ d3.json("../data/PIT").then(data => {
     2007: layer2007
   }
 
-
-  
-
- 
-
-  // var geojson = L.geoJson(statesData, {
-  //   style: style,
-  //   onEachFeature: onEachFeature
-  // })//.addTo(myMap);
-
   myMap = L.map("map", {
     center: [39.50, -98.35],
     zoom: 4,
     layers: [light, layer2019]
   });
 
-  L.control.layers(baseMaps).addTo(myMap);
+  L.control.layers(baseMaps,null,{collapsed: false}).addTo(myMap);
     
 
     // // Set up the legend, horizontal legend
@@ -635,8 +581,6 @@ d3.json("../data/PIT").then(data => {
 
     // Adding legend to the map
     legend.addTo(myMap);
-
-    // myMap.on('click',onMapClick);
     
 
 
