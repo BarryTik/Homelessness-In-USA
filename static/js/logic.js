@@ -1,6 +1,6 @@
 
 stateNames = {'AK': 'ALASKA', 'AL': 'ALABAMA', 'AR': 'ARKANSAS', 'AZ': 'ARIZONA', 'CA': 'CALIFORNIA', 'CO': 'COLORADO', 'CT': 'CONNECTICUT', 'DC': 'DISTRICT OF COLUMBIA', 'DE': 'DELAWARE', 'FL': 'FLORIDA', 'GA': 'GEORGIA', 'HI': 'HAWAII', 'IA': 'IOWA', 'ID': 'IDAHO', 'IL': 'ILLINOIS', 'IN': 'INDIANA', 'KS': 'KANSAS', 'KY': 'KENTUCKY', 'LA': 'LOUISIANA', 'MA': 'MASSACHUSETTS', 'MD': 'MARYLAND', 'ME': 'MAINE', 'MI': 'MICHIGAN', 'MN': 'MINNESOTA', 'MO': 'MISSOURI', 'MS': 'MISSISSIPPI', 'MT': 'MONTANA', 'NC': 'NORTH CAROLINA', 'ND': 'NORTH DAKOTA', 'NE': 'NEBRASKA', 'NH': 'NEW HAMPSHIRE', 'NJ': 'NEW JERSEY', 'NM': 'NEW MEXICO', 'NV': 'NEVADA', 'NY': 'NEW YORK', 'OH': 'OHIO', 'OK': 'OKLAHOMA', 'OR': 'OREGON', 'PA': 'PENNSYLVANIA', 'PR': 'PUERTO RICO', 'RI': 'RHODE ISLAND', 'SC': 'SOUTH CAROLINA', 'SD': 'SOUTH DAKOTA', 'TN': 'TENNESSEE', 'TX': 'TEXAS', 'UT': 'UTAH', 'VA': 'VIRGINIA', 'VT': 'VERMONT', 'WA': 'WASHINGTON', 'WI': 'WISCONSIN', 'WV': 'WEST VIRGINIA', 'WY': 'WYOMING'}
-
+var selectedState = "MN";
 function nameToAbbr(name) {
     var abbr = "";
     var found = false;
@@ -92,10 +92,10 @@ function init(){
     dataset = jsonData;
 
     
-    initializeLineChart("MN");
-    initializeRadialChart("MN","2019");
-    updateInfoBox("MN","2019");
-    changeFavicon(`../static/icons/MN.ico`)
+    initializeLineChart(selectedState);
+    initializeRadialChart(selectedState,"2019");
+    updateInfoBox(selectedState,"2019");
+    changeFavicon(`../static/icons/${selectedState}.ico`)
   })
 }
 
@@ -106,6 +106,7 @@ function optionChanged(state, year){
   updateRadialChart(state,year);
   updateInfoBox(state,year);
   changeFavicon(`../static/icons/${state}.ico`)
+  selectedState = state;
 }
 
 function initializeLineChart(state){
@@ -284,6 +285,7 @@ var layer2019;
 
 var homelessData = {}
 var extentTester = [];
+
 d3.json("../data/PIT").then(data => {
   //console.log("PIT Homeless Data");
   homelessData = data;
@@ -392,11 +394,6 @@ d3.json("../data/PIT").then(data => {
     optionChanged(state, year);
   }
 
-  // function onEachFeature(feature, layer) {
-  //   layer.bindPopup("<b>State: </b>" + feature.properties.name + "<br><b>Homeless Count:</b> " +
-  //     feature.properties.homeless //+ "<br><a href = ../" + nameToAbbr(feature.properties.name) +"> Data by Year</a> "
-  //     );
-  // }
 
   function onEachFeature(feature, layer) {
     layer.on({
@@ -485,21 +482,6 @@ d3.json("../data/PIT").then(data => {
     onEachFeature: onEachFeature
   });
 
- 
-
-  // layer2019.on("click", updateMaps);
-  // layer2018.on("click", updateMaps);
-  // layer2017.on("click", updateMaps);
-  // layer2016.on("click", updateMaps);
-  // layer2015.on("click", updateMaps);
-  // layer2014.on("click", updateMaps);
-  // layer2013.on("click", updateMaps);
-  // layer2012.on("click", updateMaps);
-  // layer2011.on("click", updateMaps);
-  // layer2010.on("click", updateMaps);
-  // layer2009.on("click", updateMaps);
-  // layer2008.on("click", updateMaps);
-  // layer2007.on("click", updateMaps);
 
   var baseMaps = {
     2019: layer2019,
@@ -553,6 +535,12 @@ d3.json("../data/PIT").then(data => {
 
     // Adding legend to the map
     legend.addTo(myMap);
+    
+    function onLayerChange(e){
+        optionChanged(selectedState, e.name);
+    }
+    myMap.on('baselayerchange', onLayerChange);
+
     
 
 
