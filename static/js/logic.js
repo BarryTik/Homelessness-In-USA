@@ -1,17 +1,4 @@
-// Create the map object
-// Add in map tile layer
-// Add in US map tile layer
-// update stateAbbr in dataset to full state names to use the 
-// Create a function to add color to the map based on the density of homelessness
-// Add styling to our function
-// Add in interactions 
-  // Hover
-  // Click
-// Create a legend
 
-// Tutorial: https://leafletjs.com/examples/choropleth/
-
-// loop through stateData and homelessData, where states values match, add in value from allHomeless2019 to the statesData, that way when   
 stateNames = {'AK': 'ALASKA', 'AL': 'ALABAMA', 'AR': 'ARKANSAS', 'AZ': 'ARIZONA', 'CA': 'CALIFORNIA', 'CO': 'COLORADO', 'CT': 'CONNECTICUT', 'DC': 'DISTRICT OF COLUMBIA', 'DE': 'DELAWARE', 'FL': 'FLORIDA', 'GA': 'GEORGIA', 'HI': 'HAWAII', 'IA': 'IOWA', 'ID': 'IDAHO', 'IL': 'ILLINOIS', 'IN': 'INDIANA', 'KS': 'KANSAS', 'KY': 'KENTUCKY', 'LA': 'LOUISIANA', 'MA': 'MASSACHUSETTS', 'MD': 'MARYLAND', 'ME': 'MAINE', 'MI': 'MICHIGAN', 'MN': 'MINNESOTA', 'MO': 'MISSOURI', 'MS': 'MISSISSIPPI', 'MT': 'MONTANA', 'NC': 'NORTH CAROLINA', 'ND': 'NORTH DAKOTA', 'NE': 'NEBRASKA', 'NH': 'NEW HAMPSHIRE', 'NJ': 'NEW JERSEY', 'NM': 'NEW MEXICO', 'NV': 'NEVADA', 'NY': 'NEW YORK', 'OH': 'OHIO', 'OK': 'OKLAHOMA', 'OR': 'OREGON', 'PA': 'PENNSYLVANIA', 'PR': 'PUERTO RICO', 'RI': 'RHODE ISLAND', 'SC': 'SOUTH CAROLINA', 'SD': 'SOUTH DAKOTA', 'TN': 'TENNESSEE', 'TX': 'TEXAS', 'UT': 'UTAH', 'VA': 'VIRGINIA', 'VT': 'VERMONT', 'WA': 'WASHINGTON', 'WI': 'WISCONSIN', 'WV': 'WEST VIRGINIA', 'WY': 'WYOMING'}
 
 function nameToAbbr(name) {
@@ -379,10 +366,65 @@ d3.json("../data/PIT").then(data => {
     };
   }
   
+  function updateMaps(feature, layer) {
+    var state = nameToAbbr(feature.properties.name);
+    var id = layer._leaflet_id;
+    var year;
+    if(id <= 53) {
+      year = 2019;
+    }
+    else if(id <= 106){
+      year = 2018;
+    }
+    else if (id <= 159){
+      year = 2017;
+    }
+    else if (id <= 212){
+      year = 2016;
+    }
+    else if (id <= 265){
+      year = 2015;
+    }
+    else if (id <= 318){
+      year = 2014;
+    }
+    else if (id <= 371){
+      year = 2013
+    }
+    else if (id <= 424){
+      year = 2012;
+    }
+    else if (id <= 477){
+      year = 2011;
+    }
+    else if (id <= 530){
+      year = 2010;
+    }
+    else if (id <= 583){
+      year = 2009;
+    }
+    else if (id <= 636){
+      year = 2008;
+    }
+    else{
+      year = 2007;
+    }
+    console.log(`CLICK! State: ${state}, Year: ${year}`)
+    optionChanged(state, year);
+  }
+
+  // function onEachFeature(feature, layer) {
+  //   layer.bindPopup("<b>State: </b>" + feature.properties.name + "<br><b>Homeless Count:</b> " +
+  //     feature.properties.homeless //+ "<br><a href = ../" + nameToAbbr(feature.properties.name) +"> Data by Year</a> "
+  //     );
+  // }
+
   function onEachFeature(feature, layer) {
-    layer.bindPopup("<b>State: </b>" + feature.properties.name + "<br><b>Homeless Count:</b> " +
-      feature.properties.homeless //+ "<br><a href = ../" + nameToAbbr(feature.properties.name) +"> Data by Year</a> "
-      );
+    layer.on({
+      click: (function(){
+        updateMaps(feature, layer);
+      }).bind(this)
+    })
   }
 
   updateYear("2019");  
@@ -464,70 +506,21 @@ d3.json("../data/PIT").then(data => {
     onEachFeature: onEachFeature
   });
 
-  function updateMaps(e) {
-    var state = nameToAbbr(e.target._map._popup._source.feature.properties.name);
-    var id = e.target._leaflet_id;
-    var year;
-    switch(id){
-      case 5:
-        year = 2019;
-        break;
-      case 55:
-        year = 2018;
-        break;
-      case 108:
-        year = 2017
-        break;
-      case 161:
-        year = 2016;
-        break;
-      case 214:
-        year = 2015;
-        break;
-      case 267:
-        year = 2014;
-        break;
-      case 320:
-        year = 2013;
-        break;
-      case 373:
-        year = 2012;
-        break;
-      case 426:
-        year = 2011;
-        break;
-      case 479:
-        year = 2010;
-        break;
-      case 532:
-        year = 2009;
-        break;
-      case 585:
-        year = 2008;
-        break;
-      case 638:
-        year = 2007;
-        break;
-      default:
-        year = 2019;
-    }
-    console.log(`State: ${state}, Year: ${year}`)
-    optionChanged(state, year);
-  }
+ 
 
-  layer2019.on("click", updateMaps);
-  layer2018.on("click", updateMaps);
-  layer2017.on("click", updateMaps);
-  layer2016.on("click", updateMaps);
-  layer2015.on("click", updateMaps);
-  layer2014.on("click", updateMaps);
-  layer2013.on("click", updateMaps);
-  layer2012.on("click", updateMaps);
-  layer2011.on("click", updateMaps);
-  layer2010.on("click", updateMaps);
-  layer2009.on("click", updateMaps);
-  layer2008.on("click", updateMaps);
-  layer2007.on("click", updateMaps);
+  // layer2019.on("click", updateMaps);
+  // layer2018.on("click", updateMaps);
+  // layer2017.on("click", updateMaps);
+  // layer2016.on("click", updateMaps);
+  // layer2015.on("click", updateMaps);
+  // layer2014.on("click", updateMaps);
+  // layer2013.on("click", updateMaps);
+  // layer2012.on("click", updateMaps);
+  // layer2011.on("click", updateMaps);
+  // layer2010.on("click", updateMaps);
+  // layer2009.on("click", updateMaps);
+  // layer2008.on("click", updateMaps);
+  // layer2007.on("click", updateMaps);
 
   var baseMaps = {
     2019: layer2019,

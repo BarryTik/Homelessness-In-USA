@@ -9,10 +9,8 @@ from sqlalchemy import create_engine, func
 
 stateNames = {'AK': 'ALASKA', 'AL': 'ALABAMA', 'AR': 'ARKANSAS', 'AZ': 'ARIZONA', 'CA': 'CALIFORNIA', 'CO': 'COLORADO', 'CT': 'CONNECTICUT', 'DC': 'DISTRICT OF COLUMBIA', 'DE': 'DELAWARE', 'FL': 'FLORIDA', 'GA': 'GEORGIA', 'GU': 'GUAM', 'HI': 'HAWAII', 'IA': 'IOWA', 'ID': 'IDAHO', 'IL': 'ILLINOIS', 'IN': 'INDIANA', 'KS': 'KANSAS', 'KY': 'KENTUCKY', 'LA': 'LOUISIANA', 'MA': 'MASSACHUSETTS', 'MD': 'MARYLAND', 'ME': 'MAINE', 'MI': 'MICHIGAN', 'MN': 'MINNESOTA', 'MO': 'MISSOURI', 'MS': 'MISSISSIPPI', 'MT': 'MONTANA', 'NC': 'NORTH CAROLINA', 'ND': 'NORTH DAKOTA', 'NE': 'NEBRASKA', 'NH': 'NEW HAMPSHIRE', 'NJ': 'NEW JERSEY', 'NM': 'NEW MEXICO', 'NV': 'NEVADA', 'NY': 'NEW YORK', 'OH': 'OHIO', 'OK': 'OKLAHOMA', 'OR': 'OREGON', 'PA': 'PENNSYLVANIA', 'PR': 'PUERTO RICO', 'RI': 'RHODE ISLAND', 'SC': 'SOUTH CAROLINA', 'SD': 'SOUTH DAKOTA', 'TN': 'TENNESSEE', 'TX': 'TEXAS', 'UT': 'UTAH', 'VA': 'VIRGINIA', 'VI': 'VIRGIN ISLANDS','VT': 'VERMONT', 'WA': 'WASHINGTON', 'WI': 'WISCONSIN', 'WV': 'WEST VIRGINIA', 'WY': 'WYOMING'}
 
-username = "postgres"
-password = "SQLBarry"
 
-engine = create_engine(f'postgresql://{username}:{password}@localhost:5432/HomelessOwl_db')
+engine = create_engine(f'sqlite:///HomelessOwl_db.db')
 print(engine)
 
 
@@ -45,16 +43,6 @@ def index():
     print("index page requested")
     return render_template("index.html")
 
-@app.route("/<state_name>")
-def state_info(state_name):
-    print(f"{state_name} page requested")
-    state_name = uniform(state_name)
-    full_state_name = stateNames[state_name].title()
-    print(state_name)
-    print(full_state_name)
-
-
-    return render_template("states.html", state = state_name, full_state_name = full_state_name)
 
 
 @app.route("/data/PIT")
@@ -86,34 +74,6 @@ def dataPIT():
 
     return jsonify(PIT_data)
 
-
-@app.route("/data/HIC")
-def dataHIC():
-    print("HIC data page requested")
-    session = Session(engine)
-
-    results = session.query(homelessHIC.state, homelessHIC.beds, homelessHIC.year).all()
-
-    session.close()
-
-    HIC_data = {}
-    for item in results:
-        state = item[0]
-        beds = item[1]
-        year = item[2]
-
-        found = False
-        for key in HIC_data:
-            if state == key:
-                HIC_data[key][year]=beds
-                found = True
-        if not found:
-            HIC_data[state] = {year: beds}
-
-    # print(HIC_data)
-       
-
-    return jsonify(HIC_data)
 
 @app.route("/data")
 def data():
