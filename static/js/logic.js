@@ -86,24 +86,12 @@ function changeFavicon(src) {
 var dataset = {}
 function init(){
   console.log("initializing dashboard");
-  // var stateSelector = d3.select("#selDataset");
-  // var yearSelector = d3.select("#selYear");
+
 
   d3.json("/data").then(function(jsonData){
     dataset = jsonData;
 
-    // var options = Object.keys(dataset);
-    // options.forEach((state)=> {
-    //   stateSelector.append("option")
-    //     .text(state)
-    //     .property("value", state);
-    // })
-    // var yearOptions = Object.keys(dataset["AK"]);
-    // yearOptions.forEach((year)=> {
-    //   yearSelector.append("option")
-    //     .text(year)
-    //     .property("value", year);
-    // })
+    
     initializeLineChart("MN");
     initializeRadialChart("MN","2019");
     updateInfoBox("MN","2019");
@@ -111,15 +99,6 @@ function init(){
   })
 }
 
-// function optionChanged(){
-//   var state = document.getElementById('selDataset').value;
-//   var year = document.getElementById('selYear').value;
-//   console.log(`Dropdown changed to ${state}, ${year}`);
-//   updateLineChart(state);
-//   updateRadialChart(state,year);
-//   updateInfoBox(state,year);
-//   changeFavicon(`../static/icons/${state}.ico`)
-// }
 
 function optionChanged(state, year){
   console.log(`Dropdown changed to ${state}, ${year}`);
