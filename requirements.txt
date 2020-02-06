@@ -1,6 +1,5 @@
 absl-py==0.8.1
 alabaster==0.7.12
-anaconda-project==0.8.3
 asn1crypto==0.24.0
 astor==0.8.0
 astroid==2.2.5
