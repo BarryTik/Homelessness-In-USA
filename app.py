@@ -1,5 +1,3 @@
-import numpy as np
-
 from flask import Flask, render_template, jsonify
 
 import sqlalchemy
