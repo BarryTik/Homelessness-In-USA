@@ -59,47 +59,43 @@
   </head>
   <body>
 
-  
-    <!-- The div where we will inject our map -->
-    <div class="row">
-      <div class="col-sm-6 col-md-6">
-        <div id="map"></div>
-          <div class="info"></div>
-          <div id="range-slider-1"></div>
-          <div class="leaflet-top leaflet-right"></div>
-          <div class="info leaflet-control"></div>
-      </div>
-      <!-- <div class="col-md-2">
-        <div class="well">
-          <h4>Choose a State:</h4>
-          <select id="selDataset"onchange="optionChanged()"></select>
-          <br>
-          <h4>Choose a Year:</h4>
-          <select id="selYear"onchange="optionChanged()"></select>
+    <div class="container-fluid">
+      <!-- The div where we will inject our map -->
+      <div class="row">
+        <div class="col-sm-6 col-md-6">
+          <div id="map"></div>
+            <div class="info"></div>
+            <div id="range-slider-1"></div>
+            <div class="leaflet-top leaflet-right"></div>
+            <div class="info leaflet-control"></div>
         </div>
-      </div> -->
-      <div class="col-md-6">
-        <h3>To explore this dashboard select a year on the map and click on a state.</h3>
-        <div class="about">
-          <a href="/about">More About This Dashboard</a>
+        
+        <div class="col-md-6">
+          <h3>To explore this dashboard select a year on the map and click on a state.</h3>
+          <h4 class="text-center">Mouse over the line chart and radial chart for more information.</h4>
+          <div class="about">
+            <a href="/about">More About This Dashboard</a>
+          </div>
+          <div class="text1 text-center"></div>
+          <div class="text2 text-center"></div>
         </div>
-        <div class="text1 text-center"></div>
-        <div class="text2 text-center"></div>
       </div>
-    </div>
+    <!-- </div>  
 
-    <div class="row">
-      <div class="col-md-6">
-        <div id="lineChart">
-          <div id="chart"></div>
-        </div>  
-      </div>
-      <div class="col-md-6">
-        <div id="radialChart">
-          <div id="radial"></div>
+    <div class="container-fluid"> -->
+      <div class="row">
+        <div class="col-md-6">
+          <div id="lineChart">
+            <div id="chart"></div>
+          </div>  
+        </div>
+        <div class="col-md-6">
+          <div id="radialChart">
+            <div id="radial"></div>
+          </div>
         </div>
       </div>
-    </div>
+    </div>  
 
     <!-- Insert API key-->
     <script type="text/javascript" src="../static/js/config.js"></script>

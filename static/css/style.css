@@ -134,3 +134,11 @@ h1 {
   margin: 0;
   font-size: 16px;
 }
+
+#lineChart {
+  height: 480px;
+}
+
+#radialChart{
+  height: 480px;
+}

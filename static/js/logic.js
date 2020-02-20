@@ -134,7 +134,7 @@ function initializeLineChart(state){
       }
   ],
       chart: {
-      height: 460,
+      height: '100%',
       type: 'line',
       dropShadow: {
       enabled: true,
@@ -218,7 +218,7 @@ function initializeRadialChart(state,year){
       series: [percentUnsheltered, percentSheltered, percentInFamilies, percentIndivuals, percentVeteran, percentChronic],
       chart: {
       
-      height: 520,
+      height: '100%',
       type: 'radialBar',
     },
     plotOptions: {
