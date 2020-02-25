@@ -4,7 +4,7 @@ This Dashboard visualizes data from the Department of Housing and Urban Developm
 
 [Here is a link to the data source.](https://www.hudexchange.info/resource/3031/pit-and-hic-data-since-2007/ "HUD website")
 
-### The dashboard is hosted by heroku [here](https://dashboard-homelessness-usa.herokuapp.com/ "Visit the Dashboard")
+### The dashboard is hosted by heroku [here](https://dashboard-homelessness-usa.herokuapp.com/ "Heroku may take a breif time to load")
 
 The data is stored in a SQLite database then converted to JSON format and served by a Python Flask app. Dashboard elements include a [choropleth](https://en.wikipedia.org/wiki/Choropleth_map "What's a choropleth?") created using the Javascript library [Leaflet](https://leafletjs.com/ "Leaflet Website"), a radial chart and line chart created using the Javascript library [ApexCharts](https://apexcharts.com/ "ApexCharts Website"). 
 
