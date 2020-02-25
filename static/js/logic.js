@@ -186,8 +186,8 @@ function initializeLineChart(state){
       position: 'top',
       horizontalAlign: 'right',
       floating: true,
-      offsetY: -25,
-      offsetX: -5
+      offsetY: 0,
+      offsetX: 0
   }
   };
 
