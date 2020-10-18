@@ -308,10 +308,12 @@ d3.json("../data/PIT").then(data => {
   
     
     // Adding tile layer
-  var light = L.tileLayer("https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}", {
+  var light = L.tileLayer("https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}", {
       attribution: "Map data &copy; <a href=\"https://www.openstreetmap.org/\">OpenStreetMap</a> contributors, <a href=\"https://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA</a>, Imagery © <a href=\"https://www.mapbox.com/\">Mapbox</a>",
+      tileSize: 512,
       maxZoom: 18,
-      id: "mapbox.light",
+      zoomOffset: -1,
+      id: 'mapbox/light-v9', //"mapbox.light",
       accessToken: API_KEY
     })
 
